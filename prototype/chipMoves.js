@@ -1,5 +1,46 @@
 //	Code responsible for enumerating all valid chip-taking (and returning)
 //	moves for a player, indexed by middle chip counts (and player counts)
+var singleChipArray = generateSingleChipPileArray();
+var doubleChipArray = generateDoubleChipPileArray();
+var giveBackArray = generateGiveBacks();
+
+function getChipTakingOptions(middleChipsCount, playerChipsCount){
+	var combinedArray = 
+		singleChipArray[getSingles(middleChipsCount)]
+		.concat(doubleChipArray[getDoubles(middleChipsCount)]);
+	
+	return combinedArray
+		.map(function(takeOption){
+			return {[takeOption]: giveBackArray[playerChipsCount+takeOption]};
+		});
+}
+
+function getSingles(x) {
+    var singles = 0;
+
+    while (x > 0) {
+        singles = singles << 1;
+        if((x&7) > 0){
+        	singles++;
+        }
+        x = x >> 3;
+    }
+    return singles;
+}
+
+function getDoubles(x) {
+    var doubles = 0;
+
+    while (x > 0) {
+        doubles = doubles << 1;
+        if((x&7) > 3){
+        	doubles++;
+        }
+        x = x >> 3;
+    }
+    return doubles;
+}
+
 function generateSingleChipPileArray() {
     var singleChipPileCombos = [];
 
@@ -104,7 +145,7 @@ function extractChips(x) {
 }
 
 function findGiveBackCombos(chips, nextChipIndex, combo, overflow, giveBackCombos) {
-    if (!overflow) {
+    if (overflow <= 0) {
         return giveBackCombos[combo] = combo;
     }
     for (var i = nextChipIndex; i < chips.length - overflow + 1; i++) {
@@ -122,6 +163,7 @@ function translateChipCount(x) {
     return inEnglish;
 }
 
+
 //var singleChipPileArray = generateSingleChipPileArray();
 //console.log(generateSingleChipCombos(31).map(function(combo){
 //  return combo.toString(2);
@@ -131,4 +173,14 @@ function translateChipCount(x) {
 //  return combo.toString(2);
 //}));
 //console.log(generateGiveBacks());
-console.log(generateGiveBackCombos(74899).map(translateChipCount));  // 3, 2, 2, 2, 2, 2
+//console.log(generateGiveBackCombos(74899).map(translateChipCount));  // 3, 2, 2, 2, 2, 2
+var center = 23404;
+var player = 9362;
+var chipTakingOptions;
+var time;
+
+time = Date.now();
+chipTakingOptions = getChipTakingOptions(center, player);
+time = Date.now() - time;	
+console.log("Center chips:", translateChipCount(center), "\nPlayer chips:", translateChipCount(player), "\n",
+	chipTakingOptions, time, "ms");
