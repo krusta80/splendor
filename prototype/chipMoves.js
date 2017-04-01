@@ -1,12 +1,12 @@
 //	Code responsible for enumerating all valid chip-taking (and returning)
 //	moves for a player, indexed by middle chip counts (and player counts)
-function generateSingleChipPileArray(){
-	var singleChipPileCombos = [];
+function generateSingleChipPileArray() {
+    var singleChipPileCombos = [];
 
-	for(var x = 0; x < 32; x++){
-		singleChipPileCombos.push(generateSingleChipCombos(x));
-	}
-	return singleChipPileCombos;
+    for (var x = 0; x < 32; x++) {
+        singleChipPileCombos.push(generateSingleChipCombos(x));
+    }
+    return singleChipPileCombos;
 }
 
 function generateDoubleChipPileArray() {
