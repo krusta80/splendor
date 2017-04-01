@@ -5,15 +5,24 @@ var doubleChipArray = generateDoubleChipPileArray();
 var giveBackArray = generateGiveBacks();
 
 function getChipTakingOptions(middleChipsCount, playerChipsCount) {
-    var combinedArray =
+    var combinedTakeAndGiveBack = [];
+    var combinedTakeArray =
         singleChipArray[getSingles(middleChipsCount)]
         .concat(doubleChipArray[getDoubles(middleChipsCount)]);
 
-    return combinedArray
-        .map(function(takeOption) {
-            return {
-                [takeOption]: giveBackArray[playerChipsCount + takeOption] };
+    combinedTakeArray.forEach(function(takeOption) {
+        var giveBackOptions = giveBackArray[playerChipsCount + takeOption];
+
+        if (!giveBackOptions) {
+            return combinedTakeAndGiveBack.push(takeOption + ',' + 0);
+        }
+        giveBackOptions.forEach(function(giveBackOption) {
+            if (takeOption != giveBackOption) {
+                combinedTakeAndGiveBack.push(takeOption + ',' + giveBackOption);
+            }
         });
+    });
+    return combinedTakeAndGiveBack;
 }
 
 function getSingles(x) {
@@ -156,7 +165,7 @@ function findGiveBackCombos(chips, nextChipIndex, combo, overflow, giveBackCombo
 
 function translateChipCount(x) {
     var inEnglish = "";
-    var colors = ["B", "G", "R", "W", "X", "*"];
+    var colors = ["B", "G", "R", "W", "b", "*"];
     for (var i = 0; i < 6; i++) {
         inEnglish += colors[i] + ": " + (x & 7) + ",  ";
         x = x >> 3;
@@ -164,17 +173,6 @@ function translateChipCount(x) {
     return inEnglish;
 }
 
-
-//var singleChipPileArray = generateSingleChipPileArray();
-//console.log(generateSingleChipCombos(31).map(function(combo){
-//  return combo.toString(2);
-//}));
-//console.log("=======");
-//console.log(generateDoubleChipCombos(31).map(function(combo){
-//  return combo.toString(2);
-//}));
-//console.log(generateGiveBacks());
-//console.log(generateGiveBackCombos(74899).map(translateChipCount));  // 3, 2, 2, 2, 2, 2
 var center = 23404;
 var player = 9362;
 var chipTakingOptions;
