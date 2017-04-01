@@ -1,5 +1,65 @@
 //	Code responsible for enumerating all valid chip-taking (and returning)
 //	moves for a player, indexed by middle chip counts (and player counts)
+function generateSingleChipPileArray(){
+  var singleChipPileCombos = [];
+  
+  for(var x = 0; x < 32; x++){
+    singleChipPileCombos.push(generateSingleChipCombos(x));
+  }
+  return singleChipPileCombos;
+}
+
+function generateDoubleChipPileArray(){
+  var doubleChipPileCombos = [];
+  
+  for(var x = 0; x < 32; x++){
+    doubleChipPileCombos.push(generateDoubleChipCombos(x));
+  }
+  return doubleChipPileCombos;
+}
+
+function generateSingleChipCombos(x){
+  var singleChipCombos = [];
+  
+  for(var i = 0; i <= x; i++){
+    if(hasThreeOrFewerBits(i)){
+      singleChipCombos.push(interweaveZeroes(i));
+    }
+  }
+  return singleChipCombos;
+}
+
+function generateDoubleChipCombos(x){
+  var doubleChipCombos = [];
+  
+  for(var i = 0; i < 5; i++){
+    if(x&(1<<i) > 0){
+      doubleChipCombos.push(1<<(3*i+1));
+    }
+  }
+  return doubleChipCombos;
+}
+
+function hasThreeOrFewerBits(i){
+  var bitCount = 0;
+  
+  while(i > 0){
+    bitCount += i&1;
+    i = i>>1;
+  }
+  return bitCount <= 3;
+}
+
+function interweaveZeroes(i){
+  var interwoven = 0;
+  var maskBit = 0;
+  
+  while(i > 0){
+    interwoven = interwoven|((i&1)<<(3*maskBit++));
+    i = i>>1;
+  }
+  return interwoven;
+}
 
 function generateGiveBacks(){
 	var giveBacks = [];
@@ -62,5 +122,13 @@ function translateChipCount(x){
 	return inEnglish;	
 }
 
+//var singleChipPileArray = generateSingleChipPileArray();
+//console.log(generateSingleChipCombos(31).map(function(combo){
+//  return combo.toString(2);
+//}));
+//console.log("=======");
+//console.log(generateDoubleChipCombos(31).map(function(combo){
+//  return combo.toString(2);
+//}));
 //console.log(generateGiveBacks());
 //console.log(generateGiveBackCombos(9435).map(translateChipCount));  // 2, 2, 2, 3, 3
