@@ -4,15 +4,16 @@ var singleChipArray = generateSingleChipPileArray();
 var doubleChipArray = generateDoubleChipPileArray();
 var giveBackArray = generateGiveBacks();
 
-function getChipTakingOptions(middleChipsCount, playerChipsCount){
-	var combinedArray = 
-		singleChipArray[getSingles(middleChipsCount)]
-		.concat(doubleChipArray[getDoubles(middleChipsCount)]);
-	
-	return combinedArray
-		.map(function(takeOption){
-			return {[takeOption]: giveBackArray[playerChipsCount+takeOption]};
-		});
+function getChipTakingOptions(middleChipsCount, playerChipsCount) {
+    var combinedArray =
+        singleChipArray[getSingles(middleChipsCount)]
+        .concat(doubleChipArray[getDoubles(middleChipsCount)]);
+
+    return combinedArray
+        .map(function(takeOption) {
+            return {
+                [takeOption]: giveBackArray[playerChipsCount + takeOption] };
+        });
 }
 
 function getSingles(x) {
@@ -20,8 +21,8 @@ function getSingles(x) {
 
     while (x > 0) {
         singles = singles << 1;
-        if((x&7) > 0){
-        	singles++;
+        if ((x & 7) > 0) {
+            singles++;
         }
         x = x >> 3;
     }
@@ -33,8 +34,8 @@ function getDoubles(x) {
 
     while (x > 0) {
         doubles = doubles << 1;
-        if((x&7) > 3){
-        	doubles++;
+        if ((x & 7) > 3) {
+            doubles++;
         }
         x = x >> 3;
     }
@@ -181,6 +182,6 @@ var time;
 
 time = Date.now();
 chipTakingOptions = getChipTakingOptions(center, player);
-time = Date.now() - time;	
+time = Date.now() - time;
 console.log("Center chips:", translateChipCount(center), "\nPlayer chips:", translateChipCount(player), "\n",
-	chipTakingOptions, time, "ms");
+    chipTakingOptions, time, "");
