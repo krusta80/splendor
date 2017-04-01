@@ -65,7 +65,7 @@ function generateGiveBacks() {
     var giveBacks = [];
     var chipCount;
 
-    for (var x = 0; x < (1 << 15); x++) {
+    for (var x = 0; x < (1 << 18) - 2; x++) {
         chipCount = countChips(x);
         if (chipCount >= 11 && chipCount <= 13) {
             giveBacks[x] = generateGiveBackCombos(x);
@@ -77,7 +77,7 @@ function generateGiveBacks() {
 function countChips(x) {
     var totalChips = 0;
 
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i < 6; i++) {
         totalChips += (x & 7);
         x = x >> 3;
     }
@@ -94,7 +94,7 @@ function generateGiveBackCombos(x) {
 function extractChips(x) {
     var chips = [];
 
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i < 6; i++) {
         for (var j = 0; j < (x & 7); j++) {
             chips.push(1 << (3 * i));
         }
@@ -114,8 +114,8 @@ function findGiveBackCombos(chips, nextChipIndex, combo, overflow, giveBackCombo
 
 function translateChipCount(x) {
     var inEnglish = "";
-    var colors = ["B", "G", "R", "W", "X"];
-    for (var i = 0; i < 5; i++) {
+    var colors = ["B", "G", "R", "W", "X", "*"];
+    for (var i = 0; i < 6; i++) {
         inEnglish += colors[i] + ": " + (x & 7) + ",  ";
         x = x >> 3;
     }
@@ -131,4 +131,4 @@ function translateChipCount(x) {
 //  return combo.toString(2);
 //}));
 //console.log(generateGiveBacks());
-//console.log(generateGiveBackCombos(9435).map(translateChipCount));  // 2, 2, 2, 3, 3
+console.log(generateGiveBackCombos(74899).map(translateChipCount));  // 3, 2, 2, 2, 2, 2
