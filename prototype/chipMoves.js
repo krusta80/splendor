@@ -1,5 +1,6 @@
 //	Code responsible for enumerating all valid chip-taking (and returning)
 //	moves for a player, indexed by middle chip counts (and player counts)
+var sizeof = require('object-sizeof');
 var singleChipArray = generateSingleChipPileArray();
 var doubleChipArray = generateDoubleChipPileArray();
 var giveBackArray = generateGiveBacks();
@@ -181,5 +182,8 @@ var time;
 time = Date.now();
 chipTakingOptions = getChipTakingOptions(center, player);
 time = Date.now() - time;
-console.log("Center chips:", translateChipCount(center), "\nPlayer chips:", translateChipCount(player), "\n",
-    chipTakingOptions, time, "");
+
+console.log(sizeof(singleChipArray), sizeof(doubleChipArray), sizeof(giveBackArray));
+//console.log("Center chips:", translateChipCount(center), "\nPlayer chips:", translateChipCount(player), "\n",
+//    chipTakingOptions, time, "");
+
