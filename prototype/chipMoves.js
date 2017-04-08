@@ -1,30 +1,32 @@
 //	Code responsible for enumerating all valid chip-taking (and returning)
 //	moves for a player, indexed by middle chip counts (and player counts)
-var sizeof = require('object-sizeof');
+//var sizeof = require('object-sizeof');
 var singleChipArray = generateSingleChipPileArray();
 var doubleChipArray = generateDoubleChipPileArray();
 var giveBackArray = generateGiveBacks();
+	
+module.exports = {
+	getChipTakingOptions : function(middleChipsCount, playerChipsCount) {
+	    var combinedTakeAndGiveBack = [];
+	    var combinedTakeArray =
+	        singleChipArray[getSingles(middleChipsCount)]
+	        .concat(doubleChipArray[getDoubles(middleChipsCount)]);
 
-function getChipTakingOptions(middleChipsCount, playerChipsCount) {
-    var combinedTakeAndGiveBack = [];
-    var combinedTakeArray =
-        singleChipArray[getSingles(middleChipsCount)]
-        .concat(doubleChipArray[getDoubles(middleChipsCount)]);
+	    combinedTakeArray.forEach(function(takeOption) {
+	        var giveBackOptions = giveBackArray[playerChipsCount + takeOption];
 
-    combinedTakeArray.forEach(function(takeOption) {
-        var giveBackOptions = giveBackArray[playerChipsCount + takeOption];
-
-        if (!giveBackOptions) {
-            return combinedTakeAndGiveBack.push(takeOption + ',' + 0);
-        }
-        giveBackOptions.forEach(function(giveBackOption) {
-            if (takeOption != giveBackOption) {
-                combinedTakeAndGiveBack.push(takeOption + ',' + giveBackOption);
-            }
-        });
-    });
-    return combinedTakeAndGiveBack;
-}
+	        if (!giveBackOptions) {
+	            return combinedTakeAndGiveBack.push(takeOption + ',' + 0);
+	        }
+	        giveBackOptions.forEach(function(giveBackOption) {
+	            if (takeOption != giveBackOption) {
+	                combinedTakeAndGiveBack.push(takeOption + ',' + giveBackOption);
+	            }
+	        });
+	    });
+	    return combinedTakeAndGiveBack;
+	}
+};
 
 function getSingles(x) {
     var singles = 0;
@@ -164,26 +166,21 @@ function findGiveBackCombos(chips, nextChipIndex, combo, overflow, giveBackCombo
     }
 }
 
-function translateChipCount(x) {
-    var inEnglish = "";
-    var colors = ["B", "G", "R", "W", "b", "*"];
-    for (var i = 0; i < 6; i++) {
-        inEnglish += colors[i] + ": " + (x & 7) + ",  ";
-        x = x >> 3;
-    }
-    return inEnglish;
-}
 
-var center = 23404;
-var player = 9362;
-var chipTakingOptions;
-var time;
+// if(process.argv.length < 3){
+// console.log("usage:", process.argv[1], "<center chips> <player chips>");
+// process.exit();
+// }
+// var center = process.argv[2];//23404;
+// var player = process.argv[3];//9362;
+// var chipTakingOptions;
+// var time;
 
-time = Date.now();
-chipTakingOptions = getChipTakingOptions(center, player);
-time = Date.now() - time;
+// time = Date.now();
+// chipTakingOptions = getChipTakingOptions(center, player);
+// time = Date.now() - time;
 
-console.log(sizeof(singleChipArray), sizeof(doubleChipArray), sizeof(giveBackArray));
-//console.log("Center chips:", translateChipCount(center), "\nPlayer chips:", translateChipCount(player), "\n",
-//    chipTakingOptions, time, "");
+// //console.log(sizeof(singleChipArray), sizeof(doubleChipArray), sizeof(giveBackArray));
+// console.log("Center chips:", translateChipCount(center), "\nPlayer chips:", translateChipCount(player), "\n",
+// chipTakingOptions, time, "");
 
