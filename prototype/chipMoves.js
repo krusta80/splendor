@@ -4,28 +4,28 @@
 var singleChipArray = generateSingleChipPileArray();
 var doubleChipArray = generateDoubleChipPileArray();
 var giveBackArray = generateGiveBacks();
-	
+
 module.exports = {
-	getChipTakingOptions : function(middleChipsCount, playerChipsCount) {
-	    var combinedTakeAndGiveBack = [];
-	    var combinedTakeArray =
-	        singleChipArray[getSingles(middleChipsCount)]
-	        .concat(doubleChipArray[getDoubles(middleChipsCount)]);
+    getChipTakingOptions: function(middleChipsCount, playerChipsCount) {
+        var combinedTakeAndGiveBack = [];
+        var combinedTakeArray =
+            singleChipArray[getSingles(middleChipsCount)]
+            .concat(doubleChipArray[getDoubles(middleChipsCount)]);
 
-	    combinedTakeArray.forEach(function(takeOption) {
-	        var giveBackOptions = giveBackArray[playerChipsCount + takeOption];
+        combinedTakeArray.forEach(function(takeOption) {
+            var giveBackOptions = giveBackArray[playerChipsCount + takeOption];
 
-	        if (!giveBackOptions) {
-	            return combinedTakeAndGiveBack.push(takeOption + ',' + 0);
-	        }
-	        giveBackOptions.forEach(function(giveBackOption) {
-	            if (takeOption != giveBackOption) {
-	                combinedTakeAndGiveBack.push(takeOption + ',' + giveBackOption);
-	            }
-	        });
-	    });
-	    return combinedTakeAndGiveBack;
-	}
+            if (!giveBackOptions) {
+                return combinedTakeAndGiveBack.push(takeOption + ',' + 0);
+            }
+            giveBackOptions.forEach(function(giveBackOption) {
+                if (takeOption != giveBackOption) {
+                    combinedTakeAndGiveBack.push(takeOption + ',' + giveBackOption);
+                }
+            });
+        });
+        return combinedTakeAndGiveBack;
+    }
 };
 
 function getSingles(x) {
@@ -183,4 +183,3 @@ function findGiveBackCombos(chips, nextChipIndex, combo, overflow, giveBackCombo
 // //console.log(sizeof(singleChipArray), sizeof(doubleChipArray), sizeof(giveBackArray));
 // console.log("Center chips:", translateChipCount(center), "\nPlayer chips:", translateChipCount(player), "\n",
 // chipTakingOptions, time, "");
-
