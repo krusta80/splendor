@@ -15,4 +15,16 @@ module.exports = {
         }
         return inEnglish;
     },
+
+    getColorIndex : function(color) {
+        var colors = {
+            B: 0,
+            G: 1,
+            R: 2,
+            W: 3,
+            b: 4,
+            g: 5
+        };
+        return colors[color];
+    }
 };

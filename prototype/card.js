@@ -30,8 +30,8 @@ Card.prototype.activate = function() {
 };
 
 Card.prototype.possess = function(player) {
-    if (this.owner != -1) {
-        console.log("Error:  This card is already owned by player.", this.owner);
+    if (this.owner != -1 && (this.owner != player || !this.isReserved)) {
+        console.log("Error:  This card cannot be transfered.", this.owner);
         return false;
     }
     this.owner = player;
