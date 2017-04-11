@@ -6,6 +6,8 @@ var Player = function(id, name) {
     this.reset();
 };
 
+module.exports = Player;
+
 Player.prototype.reset = function() {
     this.purchasedCards = [];
     this.cardChipValues = [0, 0, 0, 0, 0];
@@ -22,6 +24,8 @@ Player.prototype.buyCard = function(card) {
         this.points += card.points;
         this.cardChipValues[common.getColorIndex(card.color)]++;
         this.updateChipsAndCards(this.chips);
+    } else {
+    	console.log("ERROR:  Cannot buy card (",card,")");
     }
 };
 
@@ -31,14 +35,14 @@ Player.prototype.reserveCard = function(card, gold){
 		return false;
 	}
 	if(card.reserve(this.id)){
-		this.chips += gold;
-		this.chipsAndCards += gold;
+		this.chips += ((gold&1)<<15);
+		this.chipsAndCards += ((gold&1)<<15);
 		this.reservedCards.push(card);
 		return true;
 	}
 };
 
-Player.prototype.activeCard = function(card){
+Player.prototype.activateCard = function(card){
 	var reservedCount = this.reservedCards.length;
 
 	this.reservedCards = this.reservedCards.filter(function(reservedCard){
@@ -59,18 +63,24 @@ Player.prototype.payForCard = function(card) {
         var colorBalanceAfterCards =
             Math.max(0, ((card.cost >> (3 * colorIndex)) & 3) - this.cardChipValues[colorIndex]);
         
-        this.chips = (this.chips & (((1 << 18) - 1) - (3 << (3 * colorIndex)))) + 
-        				(Math.max(0, (chipTotal & 3) - colorBalanceAfterCards)<< (3 * colorIndex));        
-        goldChipsNeeded += Math.max(0,  colorBalanceAfterCards - (chipTotal & 3));
+        this.chips = (this.chips & (((1 << 18) - 1) - (7 << (3 * colorIndex)))) + 
+        				(Math.max(0, (chipTotal & 7) - colorBalanceAfterCards)<< (3 * colorIndex));        
+        goldChipsNeeded += Math.max(0,  colorBalanceAfterCards - (chipTotal & 7));
         chipTotal = chipTotal >> 3;
     }
     this.chips -= (goldChipsNeeded << 15);
 };
 
+Player.prototype.addChips = function(chips){
+	this.chips += chips;
+	this.updateChipsAndCards(this.chips);
+};
+
 Player.prototype.updateChipsAndCards = function(chips){
-	this.chipsAndCards = this.chipsAndCards & (3<<15);
+	this.chipsAndCards = 0;
 	for (var colorIndex = 0; colorIndex < 5; colorIndex++) {
-		this.chipsAndCards += Math.min(7, this.cardChipValues[colorIndex]+(chips&3))<<(3*colorIndex);
+		this.chipsAndCards += Math.min(7, this.cardChipValues[colorIndex]+(chips&7))<<(3*colorIndex);
 		chips = chips >> 3;
 	}
+	this.chipsAndCards += (chips<<15);
 };

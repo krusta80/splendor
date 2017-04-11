@@ -42,8 +42,8 @@ Card.prototype.canBeBought = function(chips) {
     var numberOfChipsShortBy = 0;
 
     for (var colorIndex = 0; colorIndex < 5; colorIndex++) {
-        numberOfChipsShortBy += Math.max(0, ((this.cost >> (3 * colorIndex)) & 3) - (chips & 3));
+        numberOfChipsShortBy += Math.max(0, ((this.cost >> (3 * colorIndex)) & 7) - (chips & 7));
         chips = chips >> 3;
     }
-    return (chips & 3) >= numberOfChipsShortBy;
+    return (chips & 7) >= numberOfChipsShortBy;
 };
