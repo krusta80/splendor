@@ -12,7 +12,7 @@ module.exports = function(board, player) {
             exposedCards, board.getTopCards(), board.chips,
             player.reservedCards, player.chips
         ),
-        purchase: getPurchaseOptions(exposedCards, player.chipsAndCards)
+        purchase: getPurchaseOptions(exposedCards, player.reservedCards, player.chipsAndCards)
     };
 };
 
@@ -24,7 +24,7 @@ function getReserveOptions(exposedCards, topCards, boardChips, reservedCards, pl
     };
 
     if (reservedCards.length === 3) {
-        return null;
+        return options;
     }
     exposedCards.forEach(function(card) {
         reserveChipOptions.forEach(function(option) {
@@ -45,8 +45,14 @@ function getReserveOptions(exposedCards, topCards, boardChips, reservedCards, pl
     return options;
 }
 
-function getPurchaseOptions(exposedCards, playerChipsAndCards) {
-    return exposedCards.filter(function(card) {
+function getPurchaseOptions(exposedCards, reservedCards, playerChipsAndCards) {
+    return exposedCards
+            .concat(reservedCards.map(function(card){
+                return {
+                    card: card
+                };
+            }))
+            .filter(function(card) {
         return card.card.canBeBought(playerChipsAndCards);
     });
 }

@@ -5,7 +5,7 @@ var Agent = function(name) {
 module.exports = Agent;
 
 Agent.prototype.makeMove = function(board, players, playerIndex, moves) {
-    //	For now, we have random bot
+    //	For now, we have a random bot.
     if (moves.purchase.length) {
         return {
             label: "PURCHASE",
@@ -22,9 +22,13 @@ Agent.prototype.makeMove = function(board, players, playerIndex, moves) {
     while (rand > 0) {
         rand -= moveTypes[++i].length;
     }
-    console.log("i is", i);
     return {
         label: moveLabels[Math.min(i, 2)],
         action: moveTypes[Math.min(i, 2)][Math.floor(Math.random() * moveTypes[Math.min(i, 2)].length)]
     };
+};
+
+Agent.prototype.takeNoble = function(nobles) {
+	//  For now, we just take the first available noble.
+	return 0;
 };

@@ -8,7 +8,7 @@ var Board = function(playerCount) {
 module.exports = Board;
 
 Board.prototype.reset = function() {
-    this.nobles = require('./noble.js');
+    this.nobles = require('./noble.js').nobles.slice(0,this.playerCount+1);
     this.decks = [new Deck(0), new Deck(1), new Deck(2)];
     this.chips = this.getStartingChips();
 };
@@ -31,7 +31,7 @@ Board.prototype.getExposedCards = function() {
         for (var i = 0; i < Math.min(4, deck.cards.length); i++) {
             exposedCards.push({
                 row: row,
-                index: i,
+                index: deck.cards.length - i - 1,
                 card: deck.cards[deck.cards.length - i - 1]
             });
         }
@@ -42,19 +42,23 @@ Board.prototype.getExposedCards = function() {
 
 Board.prototype.getTopCards = function() {
     var topCards = [];
+    var row = 0;
 
     this.decks.forEach(function(deck) {
         if (deck.cards.length > 4) {
-            topCards.push(deck.cards[deck.cards.length - 6]);
-        } else {
-            topCards.push(null);
+            topCards.push({
+                row: row,
+                index: deck.cards.length - 5,
+                card: deck.cards[deck.cards.length - 5]
+            });
         }
+        row++;
     });
     return topCards;
 };
 
 Board.prototype.removeCard = function(row, index) {
-    return decks[row].cards.splice(index, 1);
+    return this.decks[row].cards.splice(index, 1);
 };
 
 Board.prototype.addChips = function(chips) {

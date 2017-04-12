@@ -15,6 +15,7 @@ Player.prototype.reset = function() {
     this.reservedCards = [];
     this.chips = 0;
     this.chipsAndCards = 0;
+    this.nobles = [];
 };
 
 Player.prototype.buyCard = function(card) {
@@ -30,7 +31,7 @@ Player.prototype.buyCard = function(card) {
 };
 
 Player.prototype.reserveCard = function(card, gold) {
-    if (this.reservedCards.length == 3) {
+    if (this.reservedCards.length >= 3) {
         console.log("ERROR:  Player's reserves are maxed out!");
         return false;
     }
@@ -38,6 +39,9 @@ Player.prototype.reserveCard = function(card, gold) {
         this.chips += ((gold & 1) << 15);
         this.chipsAndCards += ((gold & 1) << 15);
         this.reservedCards.push(card);
+        if(card.owner != this.id) {
+            console.log("ERROR:  Owner mismatch!");
+        }
         return true;
     }
 };
@@ -48,8 +52,10 @@ Player.prototype.activateCard = function(card) {
     this.reservedCards = this.reservedCards.filter(function(reservedCard) {
         return reservedCard.cost != card.cost;
     });
-    if (reservedCount == this.reservedCards.length) {
+    if (reservedCount === this.reservedCards.length) {
         console.log("ERROR:  Card not found in player's reserved pile!");
+        console.log(card);
+        console.log(this.reservedCards);
         return false;
     }
     this.buyCard(card);
@@ -76,6 +82,11 @@ Player.prototype.addChips = function(chips) {
     this.updateChipsAndCards(this.chips);
 };
 
+Player.prototype.removeChips = function(chips) {
+    this.chips -= chips;
+    this.updateChipsAndCards(this.chips);
+};
+
 Player.prototype.updateChipsAndCards = function(chips) {
     this.chipsAndCards = 0;
     for (var colorIndex = 0; colorIndex < 5; colorIndex++) {
@@ -83,4 +94,9 @@ Player.prototype.updateChipsAndCards = function(chips) {
         chips = chips >> 3;
     }
     this.chipsAndCards += (chips << 15);
+};
+
+Player.prototype.addNoble = function(noble) {
+    this.nobles.push(noble);
+    this.points += 3;
 };

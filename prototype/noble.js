@@ -14,4 +14,14 @@ var nobleStats = [
     [0, 3, 3, 0, 3],
 ];
 
-module.exports = shuffle(nobleStats.map(common.convertCost.bind(this)));
+module.exports = {
+    nobles: shuffle(nobleStats.map(common.convertCost.bind(this))),
+    canGetNoble: function(nobleStats, playerStats) {
+        for(var i = 0; i < 5; i++){
+            if(nobleStats[i] > playerStats[i]){
+                return false;
+            }
+        }
+        return true;
+    }
+};
