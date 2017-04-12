@@ -25,11 +25,17 @@ Board.prototype.getStartingChips = function() {
 
 Board.prototype.getExposedCards = function() {
 	var exposedCards = [];
+	var row = 0;
 
 	this.decks.forEach(function(deck){
 		for(var i = 0; i < Math.min(4, deck.cards.length); i++){
-			exposedCards.push(deck.cards[deck.cards.length-i-1]);
+			exposedCards.push({
+				row: row,
+				index: i,
+				card: deck.cards[deck.cards.length-i-1]
+			});
 		}
+		row++;
 	});
 	return exposedCards;
 };
@@ -44,7 +50,7 @@ Board.prototype.getTopCards = function() {
 			topCards.push(null);
 		}
 	});
-	return exposedCards;
+	return topCards;
 };
 
 Board.prototype.removeCard = function(row,index) {

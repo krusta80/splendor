@@ -25,13 +25,29 @@ module.exports = {
             });
         });
         return combinedTakeAndGiveBack;
+    },
+    getReserveOptions: function(middleChipsCount, playerChipsCount) {
+        var take = (middleChipsCount>>15)&1;
+        var options = [];
+
+        if(take === 0){
+            return ['0,0'];
+        } else if(countChips(playerChipsCount) < 10){
+            return [(1<<15)+',0'];
+        }
+        for(var colorIndex = 0; colorIndex < 5; colorIndex++) {
+            if ((playerChipsCount & (7<<(3*colorIndex))) > 0) {
+                options.push((1<<15)+','+(1<<(3*colorIndex)));
+            }
+        }
+        return options;
     }
 };
 
 function getSingles(x) {
     var singles = 0;
 
-    while (x > 0) {
+    for(var colorIndex = 0; colorIndex < 5; colorIndex++) {
         singles = singles << 1;
         if ((x & 7) > 0) {
             singles++;
@@ -44,7 +60,7 @@ function getSingles(x) {
 function getDoubles(x) {
     var doubles = 0;
 
-    while (x > 0) {
+    for(var colorIndex = 0; colorIndex < 5; colorIndex++) {
         doubles = doubles << 1;
         if ((x & 7) > 3) {
             doubles++;
