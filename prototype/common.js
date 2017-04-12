@@ -1,3 +1,5 @@
+const util = require('util');
+
 module.exports = {
 
     convertCost: function(cost) {
@@ -26,5 +28,9 @@ module.exports = {
             g: 5
         };
         return colors[color];
+    },
+
+    show: function(obj) {
+        return util.inspect(obj, false, null);
     }
 };
