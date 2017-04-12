@@ -16,7 +16,7 @@ module.exports = {
         return inEnglish;
     },
 
-    getColorIndex : function(color) {
+    getColorIndex: function(color) {
         var colors = {
             B: 0,
             G: 1,
