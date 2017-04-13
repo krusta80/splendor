@@ -1,0 +1,14 @@
+{
+  "name": "splendor",
+  "main": "./prototype/index.js",
+  "description": "Splendor prototype.",
+  "author": "John Gruska <johngruska@gmail.com>",
+  "directories": {
+    "prototype": "./prototype"
+  },
+  "license": "MIT",
+  "scripts": {
+    "start": "node ./prototype/index.js"
+  }
+}
+
