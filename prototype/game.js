@@ -19,9 +19,9 @@ var Game = function(agents) {
 
 module.exports = Game;
 
-Game.prototype.reset = function(){
+Game.prototype.reset = function() {
     shuffle(this.players);
-    this.players.forEach(function(player){
+    this.players.forEach(function(player) {
         player.reset();
     });
     this.board.reset();
@@ -34,28 +34,29 @@ Game.prototype.getCurrentPlayer = function() {
 };
 
 Game.prototype.logMoves = function() {
-    console.log(JSON.stringify(this.movesMade));
+    console.log(JSON.stringify(this.movesMade, null, 2));
 };
 
 Game.prototype.playUntilEnd = function() {
     var player;
     var decision;
-    
-    while(this.move < 200 && !this.isOver()) {
+
+    while (this.move < 200 && !this.isOver()) {
         player = this.getCurrentPlayer();
         decision = player.agent.makeMove(
-            this.board, 
-            this.players, 
-            this.move%this.playerCount, 
+            this.board,
+            this.players,
+            this.move % this.playerCount,
             this.getMoves(this.board, player));
         this.movesMade.push({
-            player: this.gatherPlayerStats(this.getCurrentPlayer()),
+            turn: this.move,
+            player: this.gatherPlayerStats(player),
             move: decision
         });
         this.executeDecision(decision);
         this.move++;
     }
-    if(this.move >= 200) {
+    if (this.move >= 200) {
         return {
             moves: this.move,
             winner: "TIE!"
@@ -65,34 +66,34 @@ Game.prototype.playUntilEnd = function() {
 };
 
 Game.prototype.isOver = function() {
-    return this.move%this.playerCount === 0 && this.getTopScore() >= 15;
+    return this.move % this.playerCount === 0 && this.getTopScore() >= 15;
 };
 
 Game.prototype.getTopScore = function() {
-    return this.players.reduce(function(topScore, player){
+    return this.players.reduce(function(topScore, player) {
         return Math.max(topScore, player.points);
-    },0);
+    }, 0);
 };
 
 Game.prototype.executeDecision = function(decision) {
-    if(decision.label === "PURCHASE"){
+    if (decision.label === "PURCHASE") {
         return this.executePurchase(decision.action);
     }
-    if(decision.label === "TAKE"){
+    if (decision.label === "TAKE") {
         return this.executeTake(decision.action);
     }
-    if(decision.label === "RESERVE_EXPOSED"){
+    if (decision.label === "RESERVE_EXPOSED") {
         return this.executeReserve(decision.action, false);
     }
-    if(decision.label === "RESERVE_COVERED"){
+    if (decision.label === "RESERVE_COVERED") {
         return this.executeReserve(decision.action, true);
-    }   
+    }
 };
 
 Game.prototype.executePurchase = function(action) {
     var prePurchasePlayerChips = this.getCurrentPlayer().chips;
-    
-    if(action.card.isReserved) {
+
+    if (action.card.isReserved) {
         this.getCurrentPlayer().activateCard(action.card);
     } else {
         this.getCurrentPlayer().buyCard(action.card);
@@ -127,29 +128,42 @@ Game.prototype.makeChipExchange = function(take, giveBack) {
 };
 
 Game.prototype.getOutcome = function() {
+    var winner = this.getWinner();
+
     return {
-        winner: this.getWinner(),
+        winner: winner,
         score: this.getTopScore(),
         moves: this.move,
-    }; 
+    };
 };
 
 Game.prototype.getWinner = function() {
-    this.players.sort(function(a,b){
-        return (a.points - b.points)*100 + 
-                b.purchasedCards.length - a.purchasedCards.length;
+    this.players.sort(function(a, b) {
+        return (a.points - b.points) * 100 +
+            b.purchasedCards.length - a.purchasedCards.length;
     });
+    if (this.players[0].points === this.players[1].points &&
+        this.players[0].purchasedCards.length === this.players[1].purchasedCards.length) {
+        return "TIE!";
+    }
     return this.players[0].name;
 };
 
 Game.prototype.checkNobles = function() {
-    var takeableNobles = this.board.nobles.filter(function(noble){
-        return Noble.canGetNoble(noble, this.getCurrentPlayer().cardChipValues);
-    }.bind(this));
+    var index = 0;
+    var takeableNobles = this.board.nobles.map(function(noble) {
+            return {
+                index: index++,
+                noble: noble
+            };
+        })
+        .filter(function(noble) {
+            return Noble.canGetNoble(noble.noble, this.getCurrentPlayer().cardChipValues);
+        }.bind(this));
 
-    if(takeableNobles.length > 0) {
+    if (takeableNobles.length > 0) {
         this.getCurrentPlayer().addNoble(
-            this.board.nobles.splice(this.getCurrentPlayer().agent.takeNoble(takeableNobles),1));
+            this.board.nobles.splice(this.getCurrentPlayer().agent.takeNoble(takeableNobles).index, 1));
     }
 };
 
@@ -158,10 +172,10 @@ Game.prototype.gatherPlayerStats = function(player) {
         id: player.id,
         name: player.name,
         points: player.points,
-        cardSummary: player.cardChipValues,
+        cardSummary: player.getCardChipValues(),
         //cards: player.purchasedCards,
-        reserves: player.reservedCards,
+        reserves: player.getReservedCards(),
         chips: common.translateChipCount(player.chips),
-        nobles: player.nobles
+        nobles: player.getNobles()
     };
 };

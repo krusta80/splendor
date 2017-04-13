@@ -47,12 +47,12 @@ function getReserveOptions(exposedCards, topCards, boardChips, reservedCards, pl
 
 function getPurchaseOptions(exposedCards, reservedCards, playerChipsAndCards) {
     return exposedCards
-            .concat(reservedCards.map(function(card){
-                return {
-                    card: card
-                };
-            }))
-            .filter(function(card) {
-        return card.card.canBeBought(playerChipsAndCards);
-    });
+        .concat(reservedCards.map(function(card) {
+            return {
+                card: card
+            };
+        }))
+        .filter(function(card) {
+            return card.card.canBeBought(playerChipsAndCards);
+        });
 }

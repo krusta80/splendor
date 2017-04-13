@@ -1,6 +1,5 @@
 //  Code responsible for enumerating all valid chip-taking (and returning)
 //  moves for a player, indexed by middle chip counts (and player counts)
-//var sizeof = require('object-sizeof');
 var singleChipArray = generateSingleChipPileArray();
 var doubleChipArray = generateDoubleChipPileArray();
 var giveBackArray = generateGiveBacks();
@@ -181,21 +180,3 @@ function findGiveBackCombos(chips, nextChipIndex, combo, overflow, giveBackCombo
         findGiveBackCombos(chips, i + 1, combo + chips[i], overflow - 1, giveBackCombos);
     }
 }
-
-
-// if(process.argv.length < 3){
-// console.log("usage:", process.argv[1], "<center chips> <player chips>");
-// process.exit();
-// }
-// var center = process.argv[2];//23404;
-// var player = process.argv[3];//9362;
-// var chipTakingOptions;
-// var time;
-
-// time = Date.now();
-// chipTakingOptions = getChipTakingOptions(center, player);
-// time = Date.now() - time;
-
-// //console.log(sizeof(singleChipArray), sizeof(doubleChipArray), sizeof(giveBackArray));
-// console.log("Center chips:", translateChipCount(center), "\nPlayer chips:", translateChipCount(player), "\n",
-// chipTakingOptions, time, "");

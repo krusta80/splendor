@@ -15,10 +15,10 @@ var nobleStats = [
 ];
 
 module.exports = {
-    nobles: shuffle(nobleStats.map(common.convertCost.bind(this))),
+    nobles: shuffle(nobleStats),
     canGetNoble: function(nobleStats, playerStats) {
-        for(var i = 0; i < 5; i++){
-            if(nobleStats[i] > playerStats[i]){
+        for (var i = 0; i < 5; i++) {
+            if (nobleStats[i] > playerStats[i]) {
                 return false;
             }
         }

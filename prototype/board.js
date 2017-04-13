@@ -8,7 +8,7 @@ var Board = function(playerCount) {
 module.exports = Board;
 
 Board.prototype.reset = function() {
-    this.nobles = require('./noble.js').nobles.slice(0,this.playerCount+1);
+    this.nobles = require('./noble.js').nobles.slice(0, this.playerCount + 1);
     this.decks = [new Deck(0), new Deck(1), new Deck(2)];
     this.chips = this.getStartingChips();
 };
@@ -67,4 +67,8 @@ Board.prototype.addChips = function(chips) {
 
 Board.prototype.removeChips = function(chips) {
     this.chips -= chips;
+};
+
+Board.prototype.getDecks = function() {
+    return this.decks;
 };

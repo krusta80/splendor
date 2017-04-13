@@ -11,11 +11,11 @@ module.exports = Player;
 Player.prototype.reset = function() {
     this.purchasedCards = [];
     this.cardChipValues = [0, 0, 0, 0, 0];
-    this.points = 0;
     this.reservedCards = [];
+    this.nobles = [];
+    this.points = 0;
     this.chips = 0;
     this.chipsAndCards = 0;
-    this.nobles = [];
 };
 
 Player.prototype.buyCard = function(card) {
@@ -39,7 +39,7 @@ Player.prototype.reserveCard = function(card, gold) {
         this.chips += ((gold & 1) << 15);
         this.chipsAndCards += ((gold & 1) << 15);
         this.reservedCards.push(card);
-        if(card.owner != this.id) {
+        if (card.owner != this.id) {
             console.log("ERROR:  Owner mismatch!");
         }
         return true;
@@ -99,4 +99,16 @@ Player.prototype.updateChipsAndCards = function(chips) {
 Player.prototype.addNoble = function(noble) {
     this.nobles.push(noble);
     this.points += 3;
+};
+
+Player.prototype.getCardChipValues = function() {
+    return this.cardChipValues.slice(0);
+};
+
+Player.prototype.getReservedCards = function() {
+    return this.reservedCards.slice(0);
+};
+
+Player.prototype.getNobles = function() {
+    return this.nobles.slice(0);
 };

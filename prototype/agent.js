@@ -15,7 +15,8 @@ Agent.prototype.makeMove = function(board, players, playerIndex, moves) {
     var moveTypes = [moves.takeChips, moves.reserve.exposed, moves.reserve.covered];
     var moveLabels = ["TAKE", "RESERVE_EXPOSED", "RESERVE_COVERED"]
     var totalMoves = moveTypes.reduce(function(a, b) {
-        return a + b.length; }, 0);
+        return a + b.length;
+    }, 0);
     var rand = Math.random() * totalMoves;
     var i = -1;
 
@@ -29,6 +30,6 @@ Agent.prototype.makeMove = function(board, players, playerIndex, moves) {
 };
 
 Agent.prototype.takeNoble = function(nobles) {
-	//  For now, we just take the first available noble.
-	return 0;
+    //  For now, we just take the first available noble.
+    return nobles[0];
 };

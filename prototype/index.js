@@ -7,19 +7,27 @@ if (process.argv.length < 4) {
 }
 
 var numberOfGames = process.argv[2];
-var agents = process.argv.slice(3).map(function(name){
-	return new Agent(name);
+var agents = process.argv.slice(3).map(function(name) {
+    return new Agent(name);
 });
 var game = new Game(agents);
 var outcomes = [];
+var stats = {};
+var winner;
 
-while(numberOfGames--){
-	if(numberOfGames%100 === 0) {
-		console.log(numberOfGames);
-		console.log("==== NEW GAME ====");
-		game.logMoves();
-	}
-	game.reset();
-	outcomes.push(game.playUntilEnd());
+while (numberOfGames--) {
+    if (numberOfGames % 1000 === 0) {
+        console.log(numberOfGames);
+        //console.log("==== NEW GAME ====");
+        //game.logMoves();
+    }
+    game.reset();
+    outcomes.push(game.playUntilEnd());
+    winner = game.getWinner();
+    if (!stats[winner]) {
+        stats[winner] = 0;
+    }
+    stats[winner]++;
 }
 console.log(outcomes);
+console.log(stats);
