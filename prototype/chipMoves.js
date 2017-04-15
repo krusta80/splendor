@@ -18,7 +18,7 @@ module.exports = {
                 return combinedTakeAndGiveBack.push(takeOption + ',' + 0);
             }
             giveBackOptions.forEach(function(giveBackOption) {
-                if (takeOption != giveBackOption) {
+                if ((takeOption & giveBackOption) === 0) {
                     combinedTakeAndGiveBack.push(takeOption + ',' + giveBackOption);
                 }
             });

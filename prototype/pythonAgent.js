@@ -4,7 +4,20 @@ var Game = require('./game.js');
 var show = require('./common.js').show;
 var sleep = require('sleep');
 
+var game;	//	out here to avoid circular references
+var rpc; 	//  out here to avoid circular references
+
+const SLEEP =     10;		// set to 10ms for now
+const TIMEOUT = 2000;		// set to 1s for now
+
 var server = new zerorpc.Server({
+    resetRPC: function() {
+    	return {
+	    	id: 0,
+	    	clientMove: null,
+	    	gameState: null
+	    }
+    },
     newSession: function(name, numberOfOpponents, reply) {
         this.name = name.toString();
         this.nextResponse = null;
@@ -13,24 +26,57 @@ var server = new zerorpc.Server({
         for(var i = 0; i < numberOfOpponents; i++){
         	agents.push(new Agent("Opponent "+(i+1)));
         }
-        this.game = new Game(agents);
-        reply(null, "Hello, " + name + show(this.game.players));
-        console.log(show(this.game));
+        game = new Game(agents);
+        rpc = this.resetRPC();
+        //console.log(JSON.stringify(game.getGameState()));
+        reply(null, JSON.stringify(game.getGameState()));
     },
     newGame: function(reply) {
-    	this.game.reset();
-    	reply(null, "New game: " + show(this.game));
-    	setTimeout(this.game.playUntilEnd.bind(this.game), 0);
+    	game.reset();
+    	this.getGameState(reply);
+    	//reply(null, "New game started...");
+    },
+    tellAgentGameIsOver: function(board, players, playerIndex, moves, thisAgentDidWin) {
+    	rpc.gameState = game.getGameState();
     },
     makeMove: function(board, players, playerIndex, moves) {
-    	//	TODO(jgruska): Need to make game wait for agent to move...
-    	console.log("Python make move!!");
+    	//	Called by Game.
+    	var moveMade;
+
+    	console.log("making move...");
+    	rpc.gameState = game.getGameState();
+    	this.waitFor(rpc.clientMove, "client");
+    	moveMade = rpc.clientMove;
+    	rpc.clientMove = null;
+    	rpc.gameState = null;
+    	return moveMade;
+    },
+    sendMove: function(move, reply) {
+    	//	"send" is from the client's perspective
+    	rpc.clientMove = move;
+    	this.waitFor(rpc.gameState, "server");
+    	reply(null, JSON.stringify(rpc.gameState));
+    },
+    getGameState: function(reply) {
+    	// "get" is from the client's perspective
+    	console.log("getting game state...");
+    	this.waitFor(rpc.gameState, "server");
+    	reply(null, JSON.stringify(rpc.gameState));
+    },
+    waitFor: function(action, clientOrServer) {
     	var timeout = 0;
-    	while(timeout++ < 1000 && !this.nextResponse) {
-    		sleep.msleep(10);
+
+    	while(timeout < TIMEOUT && action == null) {
+    		sleep.msleep(SLEEP);
+    		timeout += SLEEP;
+    	}
+    	if(action == null) {
+    		console.log("ERROR:  Timeout reached (" + clientOrServer + ")!");
+    		process.exit(-1);
     	}
     }
 });
 
 server.bind("tcp://0.0.0.0:4242");
 console.log("Listening on port 4242...");
+

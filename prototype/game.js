@@ -43,6 +43,7 @@ Game.prototype.playUntilEnd = function() {
 
     while (this.move < 200 && !this.isOver()) {
         player = this.getCurrentPlayer();
+        console.log(player);
         decision = player.agent.makeMove(
             this.board,
             this.players,
@@ -146,7 +147,7 @@ Game.prototype.getWinner = function() {
         this.players[0].purchasedCards.length === this.players[1].purchasedCards.length) {
         return "TIE!";
     }
-    return this.players[0].name;
+    return this.players[0].id;
 };
 
 Game.prototype.checkNobles = function() {
@@ -177,5 +178,16 @@ Game.prototype.gatherPlayerStats = function(player) {
         reserves: player.getReservedCards(),
         chips: common.translateChipCount(player.chips),
         nobles: player.getNobles()
+    };
+};
+
+Game.prototype.getGameState = function(playerId) {
+    return {
+        turn: this.move,
+        board: this.board,
+        players: this.players,
+        moves: this.moves,
+        isOver: this.isOver(),
+        didWin: this.getWinner() == playerId
     };
 };
