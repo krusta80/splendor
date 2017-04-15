@@ -37,11 +37,11 @@ Game.prototype.logMoves = function() {
     console.log(JSON.stringify(this.movesMade, null, 2));
 };
 
-Game.prototype.playUntilEnd = function() {
+Game.prototype.playUntilPlayerId = function(id) {
     var player;
     var decision;
 
-    while (this.move < 200 && !this.isOver()) {
+    while (this.move < 200 && !this.isOver() && this.getCurrentPlayer().id != id) {
         player = this.getCurrentPlayer();
         console.log(player);
         decision = player.agent.makeMove(
@@ -57,13 +57,6 @@ Game.prototype.playUntilEnd = function() {
         this.executeDecision(decision);
         this.move++;
     }
-    if (this.move >= 200) {
-        return {
-            moves: this.move,
-            winner: "TIE!"
-        };
-    }
-    return this.getOutcome();
 };
 
 Game.prototype.isOver = function() {
@@ -186,7 +179,7 @@ Game.prototype.getGameState = function(playerId) {
         turn: this.move,
         board: this.board,
         players: this.players,
-        moves: this.moves,
+        moves: this.getMoves(this.board, this.getCurrentPlayer()),
         isOver: this.isOver(),
         didWin: this.getWinner() == playerId
     };
