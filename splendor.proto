@@ -1,0 +1,79 @@
+message GameState {
+	optional Board board = 1;
+	repeated Player players = 2;
+	optional Status status = 3;
+}
+
+message AvailbleMoves {
+	repeated Move chip_moves = 1;
+	repeated Move purchase_moves = 2;
+	repeated Move reserve_moves = 3;
+}
+
+message Move {
+	oneof move {
+		ChipMove chip_move = 1;
+		PurchaseMove purchase_move = 2;
+		ReserveMove reserve_move = 3;
+	}
+	
+	message ChipMove {
+		optional int32 chips_to_take = 1;
+		optional int32 chips_to_give_back = 2;
+	}
+
+	message PurchaseMove {
+		optional int32 row_index = 1;
+		optional int32 card_index = 2;
+	}
+
+	message ReserveMove {
+		optional bool is_covered = 1;
+		optional int32 row_index = 2;
+		optional int32 card_index = 3;
+	}
+}
+
+message Board {
+	optional int32 chips = 1;
+	repeated CardRow exposed_card_rows = 2;
+	repeated Card covered_cards = 3;
+	repeated Noble nobles = 4;
+}
+
+message Player {
+	optional int32 id = 1;
+	optional string name = 2;
+	optional int32 chips = 3;
+	repeated Card purchased_cards = 4;
+	repeated Card reserved_cards = 5;
+	optional int32 victory_points = 6;
+	repeated Noble nobles = 7;
+}
+
+message Status {
+	optional bool is_over = 1;
+	//	Player ID
+	optional int32 winner = 2;
+	//	Player ID
+	optional int32 current_player = 3;
+}
+
+message CardRow {
+	//	0 bottom, 1 middle, 2 top
+	optional int32 tier = 1;
+	repeated Card cards = 2;
+}
+
+message Card {
+	optional int32 tier = 1;
+	optional bool is_covered = 2;
+	optional int32 cost = 3;
+	optional bool is_reserved = 4;
+	optional int32 victory_points = 5;
+	optional int32 chip_benefit = 6;
+}
+
+message Noble {
+	optional int32 card_cost = 1;
+}

@@ -1,0 +1,9 @@
+message SplendorService {
+	message MoveRequest {
+		optional Move move = 1;
+	}
+	message MoveResponse {
+		repeated GameState game_state_changes = 1;
+		optional AvailableMoves available_moves = 2;
+	}
+}

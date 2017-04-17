@@ -43,7 +43,6 @@ Game.prototype.playUntilPlayerId = function(id) {
 
     while (this.move < 200 && !this.isOver() && this.getCurrentPlayer().id != id) {
         player = this.getCurrentPlayer();
-        console.log(player);
         decision = player.agent.makeMove(
             this.board,
             this.players,
