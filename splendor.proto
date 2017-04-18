@@ -1,10 +1,20 @@
+message SplendorService {
+	message MoveRequest {
+		optional Move move = 1;
+	}
+	message MoveResponse {
+		repeated GameState game_state_changes = 1;
+		optional AvailableMoves available_moves = 2;
+	}
+}
+
 message GameState {
 	optional Board board = 1;
 	repeated Player players = 2;
 	optional Status status = 3;
 }
 
-message AvailbleMoves {
+message AvailableMoves {
 	repeated Move chip_moves = 1;
 	repeated Move purchase_moves = 2;
 	repeated Move reserve_moves = 3;

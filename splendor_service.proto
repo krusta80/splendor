@@ -1,3 +1,5 @@
+import "./splendor.proto";
+
 message SplendorService {
 	message MoveRequest {
 		optional Move move = 1;

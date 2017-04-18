@@ -40,6 +40,7 @@ Game.prototype.logMoves = function() {
 Game.prototype.playUntilPlayerId = function(id) {
     var player;
     var decision;
+    var gameStates = [];
 
     while (this.move < 200 && !this.isOver() && this.getCurrentPlayer().id != id) {
         player = this.getCurrentPlayer();
@@ -54,8 +55,10 @@ Game.prototype.playUntilPlayerId = function(id) {
             move: decision
         });
         this.executeDecision(decision);
+        gameStates.push(this.getGameState(id));
         this.move++;
     }
+    return gameStates;
 };
 
 Game.prototype.isOver = function() {
@@ -137,7 +140,7 @@ Game.prototype.getWinner = function() {
     });
     if (this.players[0].points === this.players[1].points &&
         this.players[0].purchasedCards.length === this.players[1].purchasedCards.length) {
-        return "TIE!";
+        return -1;
     }
     return this.players[0].id;
 };
@@ -180,6 +183,8 @@ Game.prototype.getGameState = function(playerId) {
         players: this.players,
         moves: this.getMoves(this.board, this.getCurrentPlayer()),
         isOver: this.isOver(),
+        currentPlayer: playerId,
+        winner: this.getWinner(),
         didWin: this.getWinner() == playerId
     };
 };

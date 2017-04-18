@@ -31,6 +31,7 @@ module.exports = {
     },
 
     show: function(obj) {
-        return JSON.stringify(util.inspect(obj), null, 2);
+        return JSON.stringify(obj);
+        //return JSON.stringify(util.inspect(obj), null, 2);
     }
 };
