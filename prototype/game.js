@@ -159,7 +159,7 @@ Game.prototype.checkNobles = function() {
 
     if (takeableNobles.length > 0) {
         this.getCurrentPlayer().addNoble(
-            this.board.nobles.splice(this.getCurrentPlayer().agent.takeNoble(takeableNobles).index, 1));
+            this.board.nobles.splice(this.getCurrentPlayer().agent.takeNoble(takeableNobles).index, 1)[0]);
     }
 };
 

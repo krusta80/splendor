@@ -7,21 +7,22 @@ var Splendor;
 protobuf.load("../splendor.proto")
     .then(function(root) {
        Splendor = root;
-       console.log(Splendor);
     });
 
 module.exports = {
 	buildMoveResponse : function(gameStates) {
 		var moveResponse = {
 			gameStateChanges: gameStates.map(buildGameState),
-			availableMoves: buildAvailableMoves(gameStates.pop().moves)
+			availableMoves: buildAvailableMoves(gameStates[gameStates.length-1].moves)
 		};
-		var isDirty = Splendor.SplendorService.MoveResponse.verify(moveResponse);
+		// var isDirty = Splendor.SplendorService.MoveResponse.verify(moveResponse);
 		
-		if(isDirty) {
-			console.log("Verification error:", isDirty);
-			process.exit(-1);
-		}
+		// if(isDirty) {
+		// 	console.log(gameStates.board);
+		// 	console.log(moveResponse);
+		// 	console.log("Verification error:", isDirty);
+		// 	process.exit(-1);
+		// }
 		return Splendor.SplendorService.MoveResponse.encode(moveResponse).finish();
 	},
 	decodeMove : function(moveRequest) {
@@ -45,7 +46,7 @@ function buildBoard(simulatorBoard) {
 	return {
 		chips: simulatorBoard.chips,
 		exposedCardRows: simulatorBoard.decks.map(buildExposedCardRow),
-		coveredCards: simulatorBoard.decks.map(buildCoveredCard),
+		coveredCards: simulatorBoard.decks.filter(hasCoveredCard).map(buildCoveredCard),
 		nobles: simulatorBoard.nobles.map(buildNoble)
 	};
 }
@@ -57,10 +58,11 @@ function buildExposedCardRow(deck) {
 	};
 }
 
+function hasCoveredCard(deck) {
+	return deck.cards.length >= 5;
+}
+
 function buildCoveredCard(deck) {
-	if(deck.cards.length < 5) {
-		return null;
-	}
 	return {
 		tier: deck.tier,
 		isCovered: true
